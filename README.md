@@ -103,7 +103,7 @@ ebook_reader/
 ### 安装步骤
 1. **克隆代码仓库或下载代码**：
    ```bash
-   git clone <repository-url>
+   git clone [<repository-url>](https://github.com/jarricholicolm/ebook-reader.git)
    cd ebook_reader
    ```
    或者你可以直接下载代码。
