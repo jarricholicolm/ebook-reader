@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}错误 - 电子书阅读器{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-box">
+        <i class="fas fa-exclamation-circle"></i>
+        <h2>出错了</h2>
+        <p>{{ message }}</p>
+        <a href="{{ url_for('index') }}" class="btn-primary">
+            <i class="fas fa-home"></i>
+            返回首页
+        </a>
+    </div>
+</div>
+{% endblock %} 

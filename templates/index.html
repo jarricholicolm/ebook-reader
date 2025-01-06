@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}我的书架 - 电子书阅读器{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <div class="header-left">
+            <h1>我的书架</h1>
+            <div class="filters">
+                <div class="categories">
+                    <!-- 分类按钮将由 JavaScript 动态生成 -->
+                </div>
+                <button id="backButton" class="btn btn-secondary" style="display: none;">
+                    <i class="fas fa-arrow-left"></i> 返回分类
+                </button>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="search-box">
+                <form id="searchForm" onsubmit="return false;">
+                    <input type="hidden" name="category" value="{{ category }}">
+                    <input type="hidden" name="sort" value="{{ sort_by }}">
+                    <input type="text" 
+                           name="search" 
+                           id="searchInput" 
+                           placeholder="搜索书籍..."
+                           value="{{ search }}"
+                           autocomplete="off">
+                    <button type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                <button class="upload-btn" onclick="openModal()">
+                    <i class="fas fa-plus"></i>
+                    添加书籍
+                </button>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    退出登录
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="categoryView">
+        <div class="book-stats">
+            <div class="stat-item total-books">
+                <i class="fas fa-books"></i>
+                <div class="stat-info">
+                    <span class="stat-value">0</span>
+                    <span class="stat-label">总藏书</span>
+                </div>
+            </div>
+            <div class="category-stats">
+                <!-- 分类统计将由 JavaScript 动态生成，并添加点击事件 -->
+            </div>
+        </div>
+    </div>
+
+    <div id="bookListView" style="display: none;">
+        <div class="list-header">
+            <div class="sort-buttons">
+                <button class="sort-btn active" data-sort="recent">最近上传</button>
+                <button class="sort-btn" data-sort="title">按标题</button>
+                <button class="sort-btn" data-sort="author">按作者</button>
+                <button class="sort-btn" data-sort="progress">按进度</button>
+            </div>
+        </div>
+        <div class="book-list"></div>
+        <div class="pagination">
+            <button class="pagination-btn" id="prevPage" disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span id="pageInfo">第 <span id="currentPage">1</span> / <span id="totalPages">1</span> 页</span>
+            <button class="pagination-btn" id="nextPage">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 上传模态框 -->
+<div id="uploadModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>上传书籍</h2>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">选择书籍文件</label>
+                <input type="file" id="file" name="file" accept=".pdf,.epub,.mobi,.azw3,.djvu" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cover">选择封面图片 (可选)</label>
+                <input type="file" id="cover" name="cover" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label for="title">书籍标题</label>
+                <input type="text" id="title" name="title" placeholder="请输入书籍标题">
+            </div>
+
+            <div class="form-group">
+                <label for="author">作者</label>
+                <input type="text" id="author" name="author" placeholder="请输入作者">
+            </div>
+
+            <div class="form-group">
+                <label for="description">描述</label>
+                <textarea id="description" name="description" placeholder="请输入书籍描述"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="language">语言</label>
+                <input type="text" id="language" name="language" placeholder="请输入语言">
+            </div>
+
+            <div class="form-group">
+                <label for="category">分类</label>
+                <select id="category" name="category" required>
+                    <!-- 分类选项将由 JavaScript 动态生成 -->
+                </select>
+            </div>
+
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                <button type="submit" class="btn btn-primary">上传</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+{% endblock %} 

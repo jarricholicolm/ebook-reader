@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}阅读 - {{ book.title }}{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reader.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    /* 直接在页面中添加样式确保优先级 */
+    html, body {
+        background-color: #faf6f1 !important;
+    }
+    
+    /* 确保导航栏也使用护眼背景色 */
+    .navbar {
+        background-color: #faf6f1 !important;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="reader-container">
+    <div class="reader-header">
+        <div class="header-left">
+            <button onclick="history.back()" class="back-btn">
+                <i class="fas fa-arrow-left"></i> 返回
+            </button>
+            <div class="book-info">
+                <h1>{{ book.title }}</h1>
+                <p class="author">{{ book.author }}</p>
+            </div>
+        </div>
+        <div class="reader-controls">
+            <div class="page-controls">
+                <button id="prevPage" title="上一页"><i class="fas fa-chevron-left"></i></button>
+                <span id="pageInfo">页码: <span id="currentPage">1</span> / <span id="totalPages">1</span></span>
+                <button id="nextPage" title="下一页"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <button id="downloadBtn" class="download-btn" title="下载">
+                <i class="fas fa-download"></i>
+            </button>
+            <button id="settingsToggle" class="settings-btn" title="设置">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="reader-content" id="readerContent">
+        <!-- 这里将由 JavaScript 动态插入每一页的内容 -->
+    </div>
+
+    <!-- 添加翻页按钮 -->
+    <div class="pagination">
+        <button id="prevPageBottom" title="上一页">上一页</button>
+        <button id="nextPageBottom" title="下一页">下一页</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/reader.js') }}"></script>
+{% endblock %}

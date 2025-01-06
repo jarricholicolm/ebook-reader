@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}管理员注册 - 电子书阅读器{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="auth-header">
+            <i class="fas fa-user-shield auth-icon"></i>
+            <h2>管理员注册</h2>
+            <p class="auth-subtitle">创建管理员账户</p>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} fade-in">
+                        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form onsubmit="handleAdminRegister(event)" class="auth-form">
+            <div class="form-group">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" 
+                           id="username" 
+                           name="username" 
+                           required 
+                           minlength="3" 
+                           placeholder="用户名（至少3个字符）">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           required 
+                           placeholder="电子邮箱">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           required 
+                           minlength="8" 
+                           placeholder="密码（至少8个字符）">
+                    <button type="button" class="toggle-password" tabindex="-1">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <i class="fas fa-key"></i>
+                    <input type="password" 
+                           id="adminKey" 
+                           name="adminKey" 
+                           required 
+                           placeholder="管理员密钥">
+                    <button type="button" class="toggle-password" tabindex="-1">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary">
+                <span>注册</span>
+                <i class="fas fa-user-shield"></i>
+            </button>
+        </form>
+        <div class="auth-links">
+            <p>已有账号？<a href="{{ url_for('login_page') }}">立即登录</a></p>
+            <p><a href="{{ url_for('register_page') }}">普通用户注册</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function handleAdminRegister(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    try {
+        const adminKey = document.getElementById('adminKey').value;
+        console.log('Sending admin key:', adminKey);
+        
+        const response = await fetch('/api/register/admin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Admin-Secret-Key': adminKey
+            },
+            body: JSON.stringify({
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            })
+        });
+
+        const data = await response.json();
+        console.log('Server response:', data);
+
+        if (!response.ok) {
+            throw new Error(data.error || '注册失败');
+        }
+
+        alert('管理员注册成功！');
+        window.location.href = '/login';
+    } catch (error) {
+        console.error('Registration error:', error);
+        // 显示错误信息
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-danger fade-in';
+        alertDiv.innerHTML = `
+            <i class="fas fa-exclamation-circle"></i>
+            ${error.message}
+        `;
+        
+        // 移除之前的错误信息
+        const oldAlert = form.querySelector('.alert');
+        if (oldAlert) {
+            oldAlert.remove();
+        }
+        
+        // 在表单开头插入错误信息
+        form.insertBefore(alertDiv, form.firstChild);
+    }
+}
+
+// 密码显示切换功能
+document.querySelectorAll('.toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+        const input = this.parentElement.querySelector('input');
+        const icon = this.querySelector('i');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+});
+</script>
+{% endblock %} 
