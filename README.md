@@ -155,7 +155,7 @@ ebook_reader/
 ---
 
 ## API 文档
-接口详情请参考 [API 文档](docs/eBook_reader API.md)。
+接口详情请参考 [API 文档](app/docs/eBook_reader API.md)。
 
 ---
 
